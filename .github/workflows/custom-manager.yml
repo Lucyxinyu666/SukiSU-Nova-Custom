@@ -35,18 +35,9 @@ jobs:
           [ -x "$SDKM" ] || SDKM=$(find "$ANDROID_SDK_ROOT/cmdline-tools" -name sdkmanager -type f | head -n1)
           echo "sdkmanager=$SDKM"
           yes | "$SDKM" --licenses >/dev/null 2>&1 || true
-          # API 37 需要最新 cmdline-tools 仓库源；先刷新可用包列表
-          "$SDKM" --list 2>/dev/null | grep -E "platforms;android-3[5-9]" | head -20 || true
-          # 尝试安装；37 若不可用则回退 36（并在下方把源码 compileSdk 同步降到 36）
-          if "$SDKM" "platforms;android-37" 2>&1 | grep -q "Failed to find"; then
-            echo "API 37 不可用，回退安装 API 36"
-            "$SDKM" "platforms;android-36"
-            echo "COMPILE_SDK=36" >> "$GITHUB_ENV"
-            sed -i 's/extra\["androidCompileSdkVersion"\] = 37/extra["androidCompileSdkVersion"] = 36/' src/manager/build.gradle.kts
-          else
-            echo "COMPILE_SDK=37" >> "$GITHUB_ENV"
-          fi
-          "$SDKM" "build-tools;36.0.0" "ndk;29.0.14206865"
+          # 包名必须用完整形式 android-37.0（简写 android-37 找不到）
+          "$SDKM" "platforms;android-37.0" "build-tools;36.0.0" "ndk;29.0.14206865"
+          echo "COMPILE_SDK=37" >> "$GITHUB_ENV"
           echo "=== installed ==="
           ls "$ANDROID_SDK_ROOT/platforms/" | tail -5
           ls "$ANDROID_SDK_ROOT/ndk/" | tail -5
