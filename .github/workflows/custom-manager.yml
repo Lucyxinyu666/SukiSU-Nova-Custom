@@ -26,12 +26,19 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Setup Android SDK 37 + NDK 29 + Build Tools
-        uses: android-actions/setup-android@v3
-      - name: Install SDK platforms and NDK
+      - name: Install SDK platforms and NDK (runner preinstalled SDK)
         run: |
-          sdkmanager "platforms;android-37" "build-tools;36.0.0" "ndk;29.0.14206865" "cmake;3.22.1"
-          yes | sdkmanager --licenses >/dev/null 2>&1 || true
+          set -e
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          SDKM="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+          [ -x "$SDKM" ] || SDKM="$ANDROID_SDK_ROOT/cmdline-tools/16.0/bin/sdkmanager"
+          [ -x "$SDKM" ] || SDKM=$(find "$ANDROID_SDK_ROOT/cmdline-tools" -name sdkmanager -type f | head -n1)
+          echo "sdkmanager=$SDKM"
+          yes | "$SDKM" --licenses >/dev/null 2>&1 || true
+          "$SDKM" "platforms;android-37" "build-tools;36.0.0" "ndk;29.0.14206865"
+          echo "=== installed ==="
+          ls "$ANDROID_SDK_ROOT/platforms/" | tail -5
+          ls "$ANDROID_SDK_ROOT/ndk/" | tail -5
 
       - name: Download prebuilt ksud binaries (3 arch) from official release
         run: |
