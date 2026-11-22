@@ -109,9 +109,9 @@ jobs:
           find app/src/main -depth -type f -name 'WebUIActivity.kt' -execdir mv {} "${WEBUI_CLASS}Activity.kt" \;
           find app/src/main -depth -type f -name 'DownloadService.kt' -execdir mv {} "${DOWNLOAD_CLASS}Service.kt" \;
           find app/src/main -depth -type f -name 'MagicaService.java' -execdir mv {} "${MAGICA_CLASS}Service.java" \;
-          cp -f ../artifacts/ksud-arm64 "app/src/main/jniLibs/arm64-v8a/$KSUD_LIB"
-          cp -f ../artifacts/ksud-arm   "app/src/main/jniLibs/armeabi-v7a/$KSUD_LIB"
-          cp -f ../artifacts/ksud-x86_64 "app/src/main/jniLibs/x86_64/$KSUD_LIB"
+          cp -f ../../artifacts/ksud-arm64 "app/src/main/jniLibs/arm64-v8a/$KSUD_LIB"
+          cp -f ../../artifacts/ksud-arm    "app/src/main/jniLibs/armeabi-v7a/$KSUD_LIB"
+          cp -f ../../artifacts/ksud-x86_64 "app/src/main/jniLibs/x86_64/$KSUD_LIB"
           echo "Packaged identity: $KSUD_LIB, lib$CORE_LIB.so, ${APP_CLASS}Application"
 
       - name: Write custom keystore + gradle.properties
